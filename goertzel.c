@@ -36,7 +36,7 @@
 // The formula is broken down into an intermediate IIR filter
 // from n=0 to N-1, and an additional step where n=N.
 // For details see: https://en.wikipedia.org/wiki/Goertzel_algorithm
-// The implemataion is normalized to compute Fourier Transform Coefficients W[k],
+// The implemataion is normalized to compute Fourier Transform Coefficients X[k],
 // without regard for the sampling frequency, fs.
 double complex goertzel(double *x, int N, int k) {
     double w;                       // Omega(k) = w0 * k, where w0 = 2*PI*fs/N (DFT bin width)
