@@ -8,9 +8,9 @@
 
 #include "dsp.h"
 
+#include <complex.h>
 #include <math.h>
 
-#include <complex.h>
 #undef I
 #define J _Complex_I
 
