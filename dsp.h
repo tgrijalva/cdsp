@@ -40,7 +40,7 @@
 
  @param x Time series data with length 2^n
  @param N Number of data in \a x
- @param k Index of desired Fourier coefficient
+ @param k Index of desired Fourier coefficient. Valid for k=0 to (N/2)+1.
  @return Unnormalized complex Fourier coefficient X[k]
  */
 double complex goertzel(double *x, int N, int k);
