@@ -23,13 +23,8 @@
 //  SOFTWARE.
 //
 
+// NOTE: This file can be compiled as C or C++.
 #include "dsp.h"
-
-#include <complex.h>
-#include <math.h>
-
-#undef I
-#define J _Complex_I
 
 // From the Goertzel definition:
 // Y[N] = sum( x[n] * e^(-j*2*pi*k*n/N) ) from n=0 to N.
@@ -38,7 +33,7 @@
 // For details see: https://en.wikipedia.org/wiki/Goertzel_algorithm
 // The implemataion is normalized to compute Fourier Transform Coefficients X[k],
 // without regard for the sampling frequency, fs.
-double complex goertzel(double *x, int N, int k) {
+double_complex goertzel(double *x, int N, int k) {
     double w;                       // Omega(k) = w0 * k, where w0 = 2*PI*fs/N (DFT bin width)
     double sinW, cosW, twoCosW;     // Complex Exponentials Variables
     double s0, s1, s2;              // IIR State Variables
@@ -67,11 +62,11 @@ double complex goertzel(double *x, int N, int k) {
     // y[N] = e^(j*2*pi*k/N) * s[N-1] - s[N-2]
     // y[N] = [cos(w) + j*sin(w)] * s[N-1] - s[N-2]
     // y[N] = Real{ cos(w) * s[N-1] - s[N-2] } + Imag{ sin(w) * s[N-1] }
-    return (cosW * s1 - s2) + (sinW * s1) * J;
+    return double_complex(cosW * s1 - s2, sinW * s1);
 }
 
 // Same as goertzel() but with floats
-float complex goertzelf(float *x, int N, int k) {
+float_complex goertzelf(float *x, int N, int k) {
     float w;
     float sinW, cosW, twoCosW;
     float s0, s1, s2;
@@ -91,10 +86,10 @@ float complex goertzelf(float *x, int N, int k) {
         s1 = s0;
     }
     
-    return (cosW * s1 - s2) + (sinW * s1) * J;
+    return float_complex(cosW * s1 - s2, sinW * s1);
 }
 
-double complex goertzelFind(double *x, int N, double fs, double ft) {
+double_complex goertzelFind(double *x, int N, double fs, double ft) {
     // Target frequenct cannot be above Nyquest frequency
     if (ft > (fs / 2)) {
         return 0;
@@ -106,7 +101,7 @@ double complex goertzelFind(double *x, int N, double fs, double ft) {
     return goertzel(x, N, k);
 }
 
-float complex goertzelFindf(float *x, int N, float fs, float ft) {
+float_complex goertzelFindf(float *x, int N, float fs, float ft) {
     // Target frequenct cannot be above Nyquest frequency
     if (ft > (fs / 2)) {
         return 0;

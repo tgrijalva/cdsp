@@ -26,7 +26,7 @@
 #ifndef dsp_h
 #define dsp_h
 
-#include <complex.h>
+#include "complex_compat.h"
 
 // Fourier
 /**
@@ -43,12 +43,12 @@
  @param k Index of desired Fourier coefficient. Valid for k=0 to (N/2)+1.
  @return Unnormalized complex Fourier coefficient X[k]
  */
-double complex goertzel(double *x, int N, int k);
+double_complex goertzel(double *x, int N, int k);
 
 /**
  See \a goertzel definition
  */
-float complex goertzelf(float *x, int N, int k);
+float_complex goertzelf(float *x, int N, int k);
 
 /**
  Compute the complex frequency content for a target frequency
@@ -65,11 +65,11 @@ float complex goertzelf(float *x, int N, int k);
  @param ft Target frequency
  @return Unnormalized complex Fourier coefficient nearest to target frequency
  */
-double complex goertzelFind(double *x, int N, double fs, double ft);
+double_complex goertzelFind(double *x, int N, double fs, double ft);
 
 /**
  See \a goertzelFind definition
  */
-float complex goertzelFindf(float *x, int N, float fs, float ft);
+float_complex goertzelFindf(float *x, int N, float fs, float ft);
 
 #endif /* dsp_h */
