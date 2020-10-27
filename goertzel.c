@@ -24,7 +24,7 @@
 //
 
 // NOTE: This file can be compiled as C or C++.
-#include "dsp.h"
+#include "goertzel.h"
 
 // From the Goertzel Filter definition:
 // y[n] = e^(j*w0*n) * sum( x[k] * e^(-j*w0*k) ) from k=0 to n.

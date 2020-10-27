@@ -26,50 +26,19 @@
 #ifndef dsp_h
 #define dsp_h
 
-#include "complex_compat.h"
+#include "goertzel.h"
 
-// Fourier
-/**
- Computes the the k-th Fourier coefficient, X[k],
- for the time series data x[n]
- 
- By default the output value, X[k], is unnormalized.
- This is done for consistancy with Matlab/Octave's FFT functions.
- The output can be normalized using the scale factor \a (N/2).
- EX: normalizedX[k] = X[k] / (N/2).
+// Goertzel
+#undef goertzel
+#define goertzel(x, N, k) _Generic((x), \
+float*: goertzelf,  \
+default: goertzel   \
+) (x, N, k)
 
- @param x Time series data with length 2^n
- @param N Number of data in \a x
- @param k Index of desired Fourier coefficient. Valid for k=0 to (N/2)+1.
- @return Unnormalized complex Fourier coefficient X[k]
- */
-double_complex goertzel(double *x, int N, int k);
-
-/**
- See \a goertzel definition
- */
-float_complex goertzelf(float *x, int N, int k);
-
-/**
- Compute the complex frequency content for a target frequency
- within a time series dataset
- 
- By default the output value, X[k], is unnormalized.
- This is done for consistancy with Matlab/Octave's FFT functions.
- The output can be normalized using the scale factor \a (N/2).
- EX: normalizedX[k] = X[k] / (N/2).
- 
- @param x Time series data with length 2^n
- @param N Number of data in \a x
- @param fs Sampling frequency of \a x
- @param ft Target frequency
- @return Unnormalized complex Fourier coefficient nearest to target frequency
- */
-double_complex goertzelFind(double *x, int N, double fs, double ft);
-
-/**
- See \a goertzelFind definition
- */
-float_complex goertzelFindf(float *x, int N, float fs, float ft);
+#undef goertzelFind
+#define goertzelFind(x, N, fs, ft) _Generic((x), \
+float*: goertzelFindf,  \
+default: goertzelFind   \
+) (x, N, fs, ft)
 
 #endif /* dsp_h */
