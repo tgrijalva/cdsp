@@ -26,8 +26,15 @@
 // NOTE: This file can be compiled as C or C++.
 #include "dsp.h"
 
-// From the Goertzel definition:
-// Y[N] = sum( x[n] * e^(-j*2*pi*k*n/N) ) from n=0 to N.
+// From the Goertzel Filter definition:
+// y[n] = e^(j*w0*n) * sum( x[k] * e^(-j*w0*k) ) from k=0 to n.
+// When computing DFT coefficients, we apply several restrictions.
+// (1) The filter runs up to n=N, where N is the number of terms in DFT input.
+// (2) The frequencies chosen for analysis are restricted to
+// w0 = 2*pi*k/N, where k belongs to {0,1,2,...,N-1}.
+// Using the above restrictions and observing that
+// e^(j*2*pi*k) = 1, yields the following expression:
+// y[N] = sum( x[n] * e^(-j*2*pi*k*n/N) ) from n=0 to N.
 // The formula is broken down into an intermediate IIR filter
 // from n=0 to N-1, and an additional step where n=N.
 // For details see: https://en.wikipedia.org/wiki/Goertzel_algorithm
@@ -58,7 +65,9 @@ double_complex goertzel(double *x, int N, int k) {
     }
     
     // Compute final step where n = N
-    // using modified formula for y[N]
+    // s[N] = 2 * cos(w) * s[N-1] - s[N-2]
+    // y[N] = s[N] - e^(-j*2*pi*k/N) * s[N-1]
+    // Combine algebraically to yeild:
     // y[N] = e^(j*2*pi*k/N) * s[N-1] - s[N-2]
     // y[N] = [cos(w) + j*sin(w)] * s[N-1] - s[N-2]
     // y[N] = Real{ cos(w) * s[N-1] - s[N-2] } + Imag{ sin(w) * s[N-1] }
