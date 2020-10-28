@@ -113,7 +113,7 @@ double_complex goertzelGen(double *x, int N, double k) {
     sinW = sin(w);
     cosW = cos(w);
     twoCosW = 2.0 * cosW;
-    phaseFactor = exp(-I * w * N); // e^(-j*2*pi*k)
+    phaseFactor = exp(double_complex(0, -w * N)); // e^(-j*2*pi*k)
     
     s0 = 0.0;
     s1 = 0.0;
@@ -138,7 +138,7 @@ float_complex goertzelGenf(float *x, int N, float k) {
     sinW = sin(w);
     cosW = cos(w);
     twoCosW = 2.0 * cosW;
-    phaseFactor = exp(-I * w * N);
+    phaseFactor = exp(float_complex(0, -w * N));
     
     s0 = 0.0;
     s1 = 0.0;
