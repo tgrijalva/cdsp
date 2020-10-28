@@ -29,18 +29,18 @@
 #include "complex_compat.h"
 
 /**
- Computes the the k-th Fourier coefficient, X[k],
- for the time series data x[n]
+ Computes the k-th Discrete Fourier Transform (DFT) coefficient, X[k],
+ of the time series data x[n]
  
  By default the output value, X[k], is unnormalized.
  This is done for consistancy with Matlab/Octave's FFT functions.
- The output can be normalized using the scale factor \a (N/2).
+ The output can be normalized using the scale factor (N/2).
  EX: normalizedX[k] = X[k] / (N/2).
  
- @param x Time series data with length 2^n
+ @param x Time series data
  @param N Number of data in \a x
  @param k Index of desired Fourier coefficient. Valid for k=0 to (N/2)+1.
- @return Unnormalized complex Fourier coefficient X[k]
+ @return Unnormalized complex Discrete Fourier Transform coefficient X[k]
  */
 double_complex goertzel(double *x, int N, int k);
 
@@ -48,6 +48,24 @@ double_complex goertzel(double *x, int N, int k);
  See \a goertzel definition
  */
 float_complex goertzelf(float *x, int N, int k);
+
+
+/**
+ Computes the value of the Discrete Time Fourier Transform (DTFT)
+ of the time series data, x[n], at the frequency described by
+ k times the bin-width, fs/N.
+ 
+ @param x Time series data
+ @param N Number of data in \a x
+ @param k Frequency normalized DTFT index. Valid for k=0 to (N/2)+1.
+ @return Unnormalized complex Discrete Time Fourier Transform value at k
+ */
+double_complex goertzelGen(double *x, int N, double k);
+
+/**
+ See \a goertzelGen definition
+ */
+float_complex goertzelGenf(float *x, int N, float k);
 
 /**
  Compute the complex frequency content for a target frequency

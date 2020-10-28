@@ -26,6 +26,8 @@
 // NOTE: This file can be compiled as C or C++.
 #include "goertzel.h"
 
+#define kResolution 0.0001
+
 // From the Goertzel Filter definition:
 // y[n] = e^(j*w0*n) * sum( x[k] * e^(-j*w0*k) ) from k=0 to n.
 // When computing DFT coefficients, we apply several restrictions.
@@ -41,7 +43,9 @@
 // The implemataion is normalized to compute Fourier Transform Coefficients X[k],
 // without regard for the sampling frequency, fs.
 double_complex goertzel(double *x, int N, int k) {
-    double w;                       // Omega(k) = w0 * k, where w0 = 2*PI*fs/N (DFT bin width)
+    // NOTE: This implemataion is normalized with respect
+    // to the sampling frequency, fs, and thus fs = 1.
+    double w;                      // Omega(k) = w0 * k, where w0 = 2*PI*fs/N (DFT bin width)
     double sinW, cosW, twoCosW;     // Complex Exponentials Variables
     double s0, s1, s2;              // IIR State Variables
     
@@ -81,8 +85,8 @@ float_complex goertzelf(float *x, int N, int k) {
     float s0, s1, s2;
     
     w = (2.0 * M_PI * k) / N;
-    sinW = sinf(w);
-    cosW = cosf(w);
+    sinW = sin(w);
+    cosW = cos(w);
     twoCosW = 2.0 * cosW;
     
     s0 = 0.0;
@@ -98,26 +102,76 @@ float_complex goertzelf(float *x, int N, int k) {
     return float_complex(cosW * s1 - s2, sinW * s1);
 }
 
+// Similar to goertzel() but with phase correction factor
+double_complex goertzelGen(double *x, int N, double k) {
+    double w;
+    double sinW, cosW, twoCosW;
+    double s0, s1, s2;
+    double_complex phaseFactor;
+    
+    w = (2.0 * M_PI * k) / N;
+    sinW = sin(w);
+    cosW = cos(w);
+    twoCosW = 2.0 * cosW;
+    phaseFactor = exp(-I * w * N); // e^(-j*2*pi*k)
+    
+    s0 = 0.0;
+    s1 = 0.0;
+    s2 = 0.0;
+    
+    for (int n = 0; n < N; n++) {
+        s0 = x[n] + (twoCosW * s1) - s2;
+        s2 = s1;
+        s1 = s0;
+    }
+    
+    return double_complex(cosW * s1 - s2, sinW * s1) * phaseFactor;
+}
+
+float_complex goertzelGenf(float *x, int N, float k) {
+    float w;
+    float sinW, cosW, twoCosW;
+    float s0, s1, s2;
+    float_complex phaseFactor;
+    
+    w = (2.0 * M_PI * k) / N;
+    sinW = sin(w);
+    cosW = cos(w);
+    twoCosW = 2.0 * cosW;
+    phaseFactor = exp(-I * w * N);
+    
+    s0 = 0.0;
+    s1 = 0.0;
+    s2 = 0.0;
+    
+    for (int n = 0; n < N; n++) {
+        s0 = x[n] + (twoCosW * s1) - s2;
+        s2 = s1;
+        s1 = s0;
+    }
+    
+    return float_complex(cosW * s1 - s2, sinW * s1) * phaseFactor;
+}
+
 double_complex goertzelFind(double *x, int N, double fs, double ft) {
     // Target frequenct cannot be above Nyquest frequency
     if (ft > (fs / 2)) {
         return 0;
     }
     
-    // Calculate k (DFT bin) for given target frequency
-    int k = 0.5 + N * ft / fs;
-    
-    return goertzel(x, N, k);
+    // Calculate k
+    double binWidth = fs / N;
+    double k = ft / binWidth;
+    return goertzelGen(x, N, k);
 }
 
+// Same as goertzelFind() but with floats
 float_complex goertzelFindf(float *x, int N, float fs, float ft) {
-    // Target frequenct cannot be above Nyquest frequency
     if (ft > (fs / 2)) {
         return 0;
     }
     
-    // Calculate k (DFT bin) for given target frequency
-    int k = 0.5 + N * ft / fs;
-    
-    return goertzelf(x, N, k);
+    float binWidth = fs / N;
+    float k = ft / binWidth;
+    return goertzelGenf(x, N, k);
 }

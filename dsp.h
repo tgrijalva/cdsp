@@ -31,14 +31,18 @@
 // Goertzel
 #undef goertzel
 #define goertzel(x, N, k) _Generic((x), \
-float*: goertzelf,  \
-default: goertzel   \
+    float*: _Generic((k),               \
+        int: goertzelf,                 \
+        default: goertzelGenf),         \
+    default: _Generic((k),              \
+        int: goertzel,                  \
+        default: goertzelGen)           \
 ) (x, N, k)
 
 #undef goertzelFind
 #define goertzelFind(x, N, fs, ft) _Generic((x), \
-float*: goertzelFindf,  \
-default: goertzelFind   \
+    float*: goertzelFindf,  \
+    default: goertzelFind   \
 ) (x, N, fs, ft)
 
 #endif /* dsp_h */

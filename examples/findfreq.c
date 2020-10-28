@@ -22,30 +22,32 @@ int main(int argc, const char * argv[]) {
     
     // Generate a time series data signal
     // with known frequency content.
-    float x[N];            // time series data
-    float dt = 1.0 / fs;   // time step size, delta-t
+    double x[N];            // time series data
+    double dt = 1.0 / fs;   // time step size, delta-t
     
-    float f1 = 32.0;   // frequency of first sine wave in signal
-    float f2 = 76.0;   // frequency of second sine wave in signal
+    double f1 = 32.0;   // frequency of first sine wave in signal
+    double m1 = 1.0;
+    double f2 = 76.0;   // frequency of second sine wave in signal
+    double m2 = 1.0;
     
     // Populate time series data with sine waves of known frequencies, f1 and f2
+    double t;
     for (int i = 0; i < N; i++) {
-        x[i] = 7 * sin(2 * M_PI * f1 * dt * i);
-        x[i] += 2 * cos(2 * M_PI * f2 * dt * i);
+        t = dt * i;
+        x[i] = m1 * sin(2 * M_PI * f1 * t);
+        x[i] += m2 * sin(2 * M_PI * f2 * t);
     }
     
-    // Search time series signal for f1
-    float complex z;
-    z = goertzelFind(x, N, fs, f1);
-    z *= normScale;
-    printf("%.1f Hz content in x[n]: Magnitude: %f, Phase: %f degrees\n",
-           f1, abs(z), 180 * arg(z) / M_PI);
-    
-    // Search for f2
-    z = goertzelFind(x, N, fs, f2);
-    z *= normScale;
-    printf("%.1f Hz content in x[n]: Magnitude: %f, Phase: %f degrees\n",
-           f2, abs(z), 180 * arg(z) / M_PI);
+    double complex z;
+    double binWidth = fs / N;
+    double kFreq;
+    printf("frequency(Hz), Magnitude, Phase\n");
+    for (double k = 0; k <= (N/2)+1; k+=0.5) {
+        kFreq = k * binWidth;
+        z = goertzel(x, N, k);
+        z *= normScale;
+        printf("%.2lf, %lf, %lf\n", kFreq, abs(z), 180 * arg(z) / M_PI);
+    }
     
     return 0;
 }
