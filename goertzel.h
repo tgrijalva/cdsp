@@ -32,10 +32,11 @@
  Computes the k-th Discrete Fourier Transform (DFT) coefficient, X[k],
  of the time series data x[n]
  
- By default the output value, X[k], is unnormalized.
- This is done for consistancy with Matlab/Octave's FFT functions.
+ Normalization:
+ By default the output value, X[k], is unnormalized,  and should be
+ consistent with the output of Matlab/Octave's FFT functions.
  The output can be normalized using the scale factor (N/2).
- EX: normalizedX[k] = X[k] / (N/2).
+ EX: normalized X[k] = X[k] / (N/2).
  
  @param x Time series data
  @param N Number of data in \a x
@@ -55,6 +56,12 @@ float_complex goertzelf(float *x, int N, int k);
  of the time series data, x[n], at the frequency described by
  k times the bin-width, fs/N.
  
+ Normalization:
+ By default the output value, X[k], is unnormalized,  and should be
+ consistent with the output of Matlab/Octave's FFT functions.
+ The output can be normalized using the scale factor (N/2).
+ EX: normalized X[k] = X[k] / (N/2).
+ 
  @param x Time series data
  @param N Number of data in \a x
  @param k Frequency normalized DTFT index. Valid for k=0 to (N/2)+1.
@@ -71,12 +78,9 @@ float_complex goertzelGenf(float *x, int N, float k);
  Compute the complex frequency content for a target frequency
  within a time series dataset
  
- By default the output value, X[k], is unnormalized.
- This is done for consistancy with Matlab/Octave's FFT functions.
- The output can be normalized using the scale factor \a (N/2).
- EX: normalizedX[k] = X[k] / (N/2).
+ See goertzelGen's note on normalization.
  
- @param x Time series data with length 2^n
+ @param x Time series data
  @param N Number of data in \a x
  @param fs Sampling frequency of \a x
  @param ft Target frequency

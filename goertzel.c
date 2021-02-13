@@ -23,10 +23,7 @@
 //  SOFTWARE.
 //
 
-// NOTE: This file can be compiled as C or C++.
 #include "goertzel.h"
-
-#define kResolution 0.0001
 
 // From the Goertzel Filter definition:
 // y[n] = e^(j*w0*n) * sum( x[k] * e^(-j*w0*k) ) from k=0 to n.
